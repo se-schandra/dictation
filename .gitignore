@@ -1,0 +1,4 @@
+/node_modules
+/public/incorrect-*.json
+/public/correct-*.json
+package-lock.json

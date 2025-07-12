@@ -1,7 +1,9 @@
+
 let words = [];
 let practiceWords = [];
 let current = 0;
 let userAnswers = [];
+const dictationLength = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
 
 const startBtn = document.getElementById('startBtn');
 const wordCountSelect = document.getElementById('wordCountSelect');
@@ -9,18 +11,25 @@ const questionDiv = document.getElementById('question');
 const answerInput = document.getElementById('answerInput');
 const submitBtn = document.getElementById('submitBtn');
 const resultDiv = document.getElementById('result');
+const repeatBtn = document.getElementById('repeatBtn');
+
+repeatBtn.addEventListener('click', function () {
+  if (current < practiceWords.length) {
+    speakWord(practiceWords[current]);
+  }
+});
 
 // Populate the select dropdown after loading words
 fetch('./words.json')
   .then(response => response.json())
   .then(data => {
-    words = data;
+    filterOutCorrectWords(data);
     // Populate select options
     wordCountSelect.innerHTML = '';
-    for (let i = 1; i <= words.length; i++) {
+    for (let i = 0; i <= dictationLength.length; i++) {
       const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = i;
+      opt.value = dictationLength[i] || i;
+      opt.textContent = dictationLength[i] || i;
       wordCountSelect.appendChild(opt);
     }
     startBtn.disabled = false;
@@ -42,9 +51,10 @@ function startExercise() {
   startBtn.style.display = 'none';
   answerInput.style.display = 'inline';
   submitBtn.style.display = 'inline';
+  repeatBtn.style.display = 'inline';
   // Select random words for practice
   const count = parseInt(wordCountSelect.value, 10);
-  practiceWords = shuffleArray(words).slice(0, count);
+  practiceWords = shuffleArray(words).slice(0, count); // <-- random selection
   nextWord();
 }
 
@@ -54,6 +64,7 @@ function nextWord() {
     answerInput.value = '';
     answerInput.focus();
     speakWord(practiceWords[current]);
+    repeatBtn.style.display = 'inline';
   } else {
     showResults();
   }
@@ -65,13 +76,23 @@ function submitAnswer() {
   nextWord();
 }
 
-function saveIncorrectWords(incorrectWords) {
-  fetch('/api/save-incorrect', {
+
+function saveResult({ correctWords, incorrectWords }) {
+  const body = JSON.stringify({ correctWords, incorrectWords });
+
+  fetch('/api/save-result', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(incorrectWords)
+    body
   })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        alert('Error saving incorrect words: ' + response.statusText);
+      } else {
+        return response.json();
+      }
+    }
+    )
     .then(data => {
       if (data.status !== 'ok') {
         alert('Failed to save incorrect words.' + (data.error ? ': ' + data.error : data.status));
@@ -85,6 +106,7 @@ function saveIncorrectWords(incorrectWords) {
 function showResults() {
   answerInput.style.display = 'none';
   submitBtn.style.display = 'none';
+  repeatBtn.style.display = 'none';
 
   let correctList = [];
   let incorrectList = [];
@@ -120,8 +142,8 @@ function showResults() {
   resultDiv.innerHTML = html;
   startBtn.textContent = 'Restart';
   startBtn.style.display = 'inline';
-  const incorrectWords = incorrectList.map(item => item.word);
-  saveIncorrectWords(incorrectWords);
+  const incorrectWords = incorrectList.map(item => item.word) || [];
+  saveResult({ correctWords:correctList, incorrectWords });
 }
 
 // Utility to shuffle an array
@@ -133,6 +155,21 @@ function shuffleArray(array) {
   }
   return arr;
 }
+
+async function filterOutCorrectWords(allWords) {
+  const response = await fetch('/api/all-correct-words');
+  const data = await response.json();
+  if (Array.isArray(data.words)) {
+    console.log('Correct words fetched:', data.words);
+    // Remove correct words from the main words list
+    const correctSet = new Set(data.words.map(w => w?.toLowerCase()).filter(Boolean));
+    words = allWords.filter(w => !correctSet.has(w.toLowerCase()));
+    return;
+  }
+  words = allWords; // If no correct words found, return all
+  return;
+}
+
 
 startBtn.addEventListener('click', startExercise);
 submitBtn.addEventListener('click', submitAnswer);

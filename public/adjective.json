@@ -1,0 +1,124 @@
+{
+  "year6AdjectiveWordMat": {
+    "appearance": [
+      "handsome",
+      "elegant",
+      "scruffy",
+      "graceful",
+      "breathtaking",
+      "magnificent",
+      "attractive",
+      "dishevelled",
+      "quaint",
+      "picturesque"
+    ],
+    "size_and_shape": [
+      "gigantic",
+      "minuscule",
+      "enormous",
+      "petite",
+      "bulky",
+      "slender",
+      "spherical",
+      "angular",
+      "towering",
+      "stubby"
+    ],
+    "colour_and_light": [
+      "vivid",
+      "dull",
+      "glowing",
+      "murky",
+      "radiant",
+      "crimson",
+      "golden",
+      "pale",
+      "shadowy",
+      "translucent"
+    ],
+    "emotion_and_mood": [
+      "joyful",
+      "anxious",
+      "furious",
+      "melancholy",
+      "hopeful",
+      "gloomy",
+      "nervous",
+      "thrilled",
+      "peaceful",
+      "irritated"
+    ],
+    "character_and_personality": [
+      "brave",
+      "cunning",
+      "loyal",
+      "generous",
+      "arrogant",
+      "timid",
+      "ruthless",
+      "compassionate",
+      "stubborn",
+      "diligent"
+    ],
+    "texture_and_touch": [
+      "rough",
+      "smooth",
+      "slippery",
+      "gritty",
+      "fuzzy",
+      "sticky",
+      "velvety",
+      "crisp",
+      "prickly",
+      "bumpy"
+    ],
+    "sound_and_voice": [
+      "deafening",
+      "hushed",
+      "raspy",
+      "melodic",
+      "shrill",
+      "thundering",
+      "whispery",
+      "muffled",
+      "piercing",
+      "grating"
+    ],
+    "smell_and_taste": [
+      "aromatic",
+      "putrid",
+      "zesty",
+      "bitter",
+      "savoury",
+      "fragrant",
+      "stale",
+      "sweet",
+      "tangy",
+      "rancid"
+    ],
+    "weather_and_nature": [
+      "blustery",
+      "humid",
+      "frosty",
+      "stormy",
+      "scorching",
+      "misty",
+      "barren",
+      "lush",
+      "tranquil",
+      "thundery"
+    ],
+    "time_and_speed": [
+      "rapid",
+      "leisurely",
+      "sudden",
+      "gradual",
+      "eternal",
+      "fleeting",
+      "ancient",
+      "modern",
+      "swift",
+      "timely"
+    ]
+  }
+}

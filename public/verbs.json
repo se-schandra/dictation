@@ -1,0 +1,148 @@
+{
+    "advancedActionVerbs": {
+        "movement": [
+            "stagger",
+            "stride",
+            "tiptoe",
+            "march",
+            "dash",
+            "creep",
+            "lunge",
+            "dart",
+            "trudge",
+            "amble"
+        ],
+        "speech": [
+            "murmur",
+            "bellow",
+            "whisper",
+            "mutter",
+            "roar",
+            "declare",
+            "stammer",
+            "plead",
+            "demand",
+            "shriek"
+        ],
+        "thinking_and_feeling": [
+            "ponder",
+            "realise",
+            "consider",
+            "assume",
+            "wonder",
+            "suspect",
+            "reflect",
+            "decide",
+            "hope",
+            "regret"
+        ],
+        "interaction": [
+            "grasp",
+            "snatch",
+            "offer",
+            "slam",
+            "grab",
+            "push",
+            "yank",
+            "caress",
+            "throw",
+            "clutch"
+        ],
+        "observation": [
+            "glance",
+            "gaze",
+            "glare",
+            "peer",
+            "stare",
+            "scan",
+            "inspect",
+            "notice",
+            "witness",
+            "observe"
+        ],
+        "combat_and_power": [
+            "strike",
+            "pummel",
+            "blast",
+            "crush",
+            "smash",
+            "attack",
+            "defend",
+            "lunge",
+            "block",
+            "counter"
+        ],
+        "emotion_expressions": [
+            "sigh",
+            "frown",
+            "smirk",
+            "snarl",
+            "grin",
+            "weep",
+            "beam",
+            "gasp",
+            "tremble",
+            "sob"
+        ],
+        "walk": [
+            "stride",
+            "stagger",
+            "march",
+            "tiptoe",
+            "amble",
+            "trudge",
+            "saunter",
+            "creep",
+            "wander",
+            "plod"
+        ],
+        "fear": [
+            "tremble",
+            "shudder",
+            "wince",
+            "flinch",
+            "cower",
+            "panic",
+            "dread",
+            "gasp",
+            "freeze",
+            "quiver"
+        ],
+        "laugh": [
+            "chuckle",
+            "giggle",
+            "snigger",
+            "snort",
+            "roar",
+            "cackle",
+            "titter",
+            "howl",
+            "shriek",
+            "guffaw"
+        ],
+        "run_away": [
+            "flee",
+            "bolt",
+            "dash",
+            "escape",
+            "retreat",
+            "sprint",
+            "hasten",
+            "scramble",
+            "scatter",
+            "scurry"
+        ],
+        "strike": [
+            "punch",
+            "slam",
+            "smack",
+            "lash",
+            "jab",
+            "bash",
+            "whack",
+            "thump",
+            "pummel",
+            "swipe"
+        ]
+    }
+}
