@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dictation Exercise App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Dictation Exercise</h1>
+  <div id="exercise">
+    <!-- Add this above your startBtn in index.html -->
+<label for="wordCountSelect">How many words to practice?</label>
+<select id="wordCountSelect"></select>
+    <button id="startBtn">Start Exercise</button>
+    <div id="question" style="margin-top:20px;"></div>
+    <input type="text" id="answerInput" style="display:none;" autocomplete="off" />
+    <button id="submitBtn" style="display:none;">Submit</button>
+    <div id="result" style="margin-top:20px;"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
