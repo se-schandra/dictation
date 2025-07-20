@@ -1,4 +1,8 @@
 /node_modules
+/public/adjective_sorting/incorrect-*.json
+/public/adjective_sorting/correct-*.json
+/public/dictation/incorrect-*.json
+/public/dictation/correct-*.json
 /public/incorrect-*.json
 /public/correct-*.json
 package-lock.json

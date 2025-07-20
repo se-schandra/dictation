@@ -1,0 +1,43 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 2em;
+  background: #f9f9f9;
+}
+h1 {
+  color: #2c3e50;
+}
+#adjectivePool {
+  margin-bottom: 2em;
+  padding: 1em;
+  background: #f1f1f1;
+  border-radius: 6px;
+  min-height: 60px;
+  border: 2px solid #b2bec3;
+}
+.adjective {
+  display: inline-block;
+  background: #e1ecf4;
+  color: #2c3e50;
+  border-radius: 4px;
+  padding: 0.3em 0.7em;
+  margin: 0.2em;
+  cursor: grab;
+  border: 1px solid #b2bec3;
+}
+.category-box {
+  border: 2px dashed #3498db;
+  min-height: 60px;
+  padding: 1em;
+  margin-bottom: 2em;
+  background: #fff;
+  width: 300px;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 1em;
+}
+.category-title {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  color: #3498db;
+  text-align: center;
+}

@@ -5,12 +5,23 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// API endpoint to serve adjectives.json
+app.get('/api/adjectives', (req, res) => {
+  const filePath = path.join(__dirname, 'public', '/adjectives/adjective.json');
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: 'Unable to read adjectives file.' });
+    }
+    res.type('application/json').send(data);
+  });
+});
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/save-result', async (req, res) => {
   console.log('Received data:', req.body);
-  let { incorrectWords, correctWords } = req.body.incorrect || req.body;
+  let { incorrectWords, correctWords, testType } = req.body;
   if (!Array.isArray(incorrectWords) || !Array.isArray(correctWords)) {
     return res.status(400).json({ error: 'Invalid data' });
   }
@@ -18,16 +29,11 @@ app.post('/api/save-result', async (req, res) => {
   // Create a timestamped filename
   const now = new Date();
   const timestamp = now.toISOString().replace(/[:.]/g, '-');
-  const incorrectFilePath = path.join(
-    __dirname,
-    'public',
-    `incorrect/incorrect-${timestamp}.json`
-  );
-  const correctFilePath = path.join(
-    __dirname,
-    'public',
-    `correct/correct-${timestamp}.json`
-  );
+  const incorrectDir = path.join(__dirname, 'public', testType, 'incorrect');
+  const correctDir = path.join(__dirname, 'public', testType, 'correct');
+  const incorrectFilePath = path.join(incorrectDir, `incorrect-${timestamp}.json`);
+  const correctFilePath = path.join(correctDir, `correct-${timestamp}.json`);
+
 
   try {
     if (incorrectFilePath.length) {
@@ -35,15 +41,21 @@ app.post('/api/save-result', async (req, res) => {
     }
     if (correctFilePath.length) {
       await fs.promises.writeFile(correctFilePath, JSON.stringify(correctWords, null, 2));
-    }
-    res.json({ status: 'ok', message: 'Results saved successfully' });
+    } res.json({
+      status: 'ok',
+      message: 'Results saved successfully',
+      correctFile: `correct-${timestamp}.json`,
+      incorrectFile: `incorrect-${timestamp}.json`
+    });
   } catch (err) {
     res.status(500).json({ error: 'Failed to save', details: err.message });
   }
 });
 
-app.get('/api/all-correct-words', async (req, res) => {
-  const correctDir = path.join(__dirname, 'public', 'correct');
+app.post('/api/all-correct-words', async (req, res) => {
+  const { testType } = req.body;
+  const correctDir = path.join(__dirname, 'public', testType, 'correct');
+  console.log('Fetching correct words from:', correctDir);
   try {
     const files = await fs.promises.readdir(correctDir);
     if (files.length === 0) {
@@ -63,13 +75,17 @@ app.get('/api/all-correct-words', async (req, res) => {
     }
     res.json({ words: allWords });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch correct words', details: err.message });
+    res.status(500).json({ error: 'Failed to fetch correct words on path `' + correctDir + '`', details: err.message });
   }
 });
 
 // Serve index.html for root
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/adjectives', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'adjectives', 'adjectives.html'));
 });
 
 app.listen(PORT, () => {

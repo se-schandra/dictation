@@ -1,5 +1,4 @@
-
-let words = [];
+let words = {}; // Now words is a key/value map (word: sentence)
 let practiceWords = [];
 let current = 0;
 let userAnswers = [];
@@ -12,10 +11,22 @@ const answerInput = document.getElementById('answerInput');
 const submitBtn = document.getElementById('submitBtn');
 const resultDiv = document.getElementById('result');
 const repeatBtn = document.getElementById('repeatBtn');
+const exampleBtn = document.getElementById('example');
 
 repeatBtn.addEventListener('click', function () {
   if (current < practiceWords.length) {
     speakWord(practiceWords[current]);
+  }
+});
+
+exampleBtn.addEventListener('click', function () {
+  if (current < practiceWords.length) {
+    const word = practiceWords[current];
+    const sentence = words[word];
+    if (sentence) {
+      const utter = new window.SpeechSynthesisUtterance(sentence);
+      window.speechSynthesis.speak(utter);
+    }
   }
 });
 
@@ -24,20 +35,20 @@ fetch('./words.json')
   .then(response => response.json())
   .then(data => {
     filterOutCorrectWords(data);
-    // Populate select options
-    wordCountSelect.innerHTML = '';
+  // Populate select options
+  wordCountSelect.innerHTML = '';
     for (let i = 0; i <= dictationLength.length; i++) {
-      const opt = document.createElement('option');
+    const opt = document.createElement('option');
       opt.value = dictationLength[i] || i;
       opt.textContent = dictationLength[i] || i;
-      wordCountSelect.appendChild(opt);
-    }
-    startBtn.disabled = false;
+    wordCountSelect.appendChild(opt);
+  }
+  startBtn.disabled = false;
   })
   .catch(err => {
     resultDiv.innerHTML = '<span style="color:red;">Failed to load words list.</span>';
     startBtn.disabled = true;
-  });
+});
 
 function speakWord(word) {
   const utter = new window.SpeechSynthesisUtterance(word);
@@ -54,7 +65,7 @@ function startExercise() {
   repeatBtn.style.display = 'inline';
   // Select random words for practice
   const count = parseInt(wordCountSelect.value, 10);
-  practiceWords = shuffleArray(words).slice(0, count); // <-- random selection
+  practiceWords = shuffleArray(Object.keys(words)).slice(0, count); // <-- random selection from keys
   nextWord();
 }
 
@@ -65,6 +76,7 @@ function nextWord() {
     answerInput.focus();
     speakWord(practiceWords[current]);
     repeatBtn.style.display = 'inline';
+    exampleBtn.style.display = 'inline';
   } else {
     showResults();
   }
@@ -76,9 +88,9 @@ function submitAnswer() {
   nextWord();
 }
 
-
 function saveResult({ correctWords, incorrectWords }) {
-  const body = JSON.stringify({ correctWords, incorrectWords });
+  console.log('Saving result:', { correctWords, incorrectWords });
+  const body = JSON.stringify({ correctWords, incorrectWords, testType: 'dictation' });
 
   fetch('/api/save-result', {
     method: 'POST',
@@ -107,6 +119,7 @@ function showResults() {
   answerInput.style.display = 'none';
   submitBtn.style.display = 'none';
   repeatBtn.style.display = 'none';
+  exampleBtn.style.display = 'none';
 
   let correctList = [];
   let incorrectList = [];
@@ -156,20 +169,27 @@ function shuffleArray(array) {
   return arr;
 }
 
-async function filterOutCorrectWords(allWords) {
-  const response = await fetch('/api/all-correct-words');
-  const data = await response.json();
-  if (Array.isArray(data.words)) {
-    console.log('Correct words fetched:', data.words);
-    // Remove correct words from the main words list
-    const correctSet = new Set(data.words.map(w => w?.toLowerCase()).filter(Boolean));
-    words = allWords.filter(w => !correctSet.has(w.toLowerCase()));
-    return;
+async function filterOutCorrectWords(wordsData) {
+  try {
+    const response = await fetch('/api/all-correct-words', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ testType: 'dictation' })
+    });
+    if (response.status === 200 && Object.keys(wordsData.words || {}).length > 0) {
+      const data = await response.json();
+      const correctSet = new Set(data.words.map(w => w?.toLowerCase()).filter(Boolean));
+      words = Object.fromEntries(
+        Object.entries(wordsData.words || wordsData).filter(([w]) => !correctSet.has(w.toLowerCase()))
+      );
+    } else {
+      words = wordsData.words || wordsData;
+    }
+  } catch (err) {
+    resultDiv.innerHTML = '<span style="color:red;">Error filtering correct words: ' + err.message + '</span>';
+    words = wordsData.words || wordsData;
   }
-  words = allWords; // If no correct words found, return all
-  return;
 }
-
 
 startBtn.addEventListener('click', startExercise);
 submitBtn.addEventListener('click', submitAnswer);

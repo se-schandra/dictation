@@ -20,7 +20,7 @@ button {
   margin: 10px;
 }
 
-#repeatBtn {
+#repeatBtn, #exampleBtn {
   background: none;
   border: none;
   padding: 0.3em 0.5em;
