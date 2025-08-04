@@ -52,6 +52,9 @@ fetch('./words.json')
 
 function speakWord(word) {
   const utter = new window.SpeechSynthesisUtterance(word);
+   utter.rate = 0.8; // Slow down speech (0.1 = very slow, 1 = normal, 10 = very fast)
+  utter.pitch = 1; // Normal pitch
+  utter.volume = 1; // Full volume
   window.speechSynthesis.speak(utter);
 }
 
@@ -77,9 +80,16 @@ function nextWord() {
     speakWord(practiceWords[current]);
     repeatBtn.style.display = 'inline';
     exampleBtn.style.display = 'inline';
+    submitBtn.disabled = true; // Disable submit button initially
   } else {
     showResults();
   }
+}
+
+// Add this function to check input and toggle submit button
+function checkInput() {
+  const isEmpty = answerInput.value.trim() === '';
+  submitBtn.disabled = isEmpty;
 }
 
 function submitAnswer() {
@@ -193,6 +203,8 @@ async function filterOutCorrectWords(wordsData) {
 
 startBtn.addEventListener('click', startExercise);
 submitBtn.addEventListener('click', submitAnswer);
+answerInput.addEventListener('input', checkInput);
+// Update the existing keydown event listener
 answerInput.addEventListener('keydown', function (e) {
-  if (e.key === 'Enter') submitAnswer();
+  if (e.key === 'Enter' && !submitBtn.disabled) submitAnswer();
 });

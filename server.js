@@ -79,6 +79,48 @@ app.post('/api/all-correct-words', async (req, res) => {
   }
 });
 
+app.get('/api/all-incorrect-words', async (req, res) => {
+  const { testType } = req.query;
+  
+  if (!testType) {
+    return res.status(400).json({ error: 'testType query parameter is required' });
+  }
+  
+  const incorrectDir = path.join(__dirname, 'public', testType, 'incorrect');
+  console.log('Fetching incorrect words from:', incorrectDir);
+  
+  try {
+    // Ensure the directory exists
+    try {
+      await fs.promises.access(incorrectDir, fs.constants.F_OK);
+    } catch (err) {
+      // Directory does not exist
+      return res.json({ words: [] });
+    }
+
+    const files = await fs.promises.readdir(incorrectDir);
+    if (files.length === 0) {
+      return res.json({ words: [] });
+    }
+    
+    let allWords = [];
+    for (const file of files) {
+      if (file.endsWith('.json')) {
+        const filePath = path.join(incorrectDir, file);
+        const content = await fs.promises.readFile(filePath, 'utf-8');
+        const words = JSON.parse(content);
+        // If file contains an array, merge it
+        if (Array.isArray(words)) {
+          allWords = allWords.concat(words);
+        }
+      }
+    }
+    res.json({ words: allWords });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch incorrect words from path `' + incorrectDir + '`', details: err.message });
+  }
+});
+
 // Serve index.html for root
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
